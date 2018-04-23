@@ -57,23 +57,23 @@ int path[LENGTH][2] = {{13,146},
 
 void goToTheta(int t1, int t2){ //puts joints at desired theta one and theta two
 	
-	while(nMotorEncoder(J1)!=t1-J1_INIT||nMotorEncoder(J2)!=t2-J2_INIT){ //while both joints are not at the desired location
+	while(nMotorEncoder(J1)!=J1_SCALE*(t1-J1_INIT)||nMotorEncoder(J2)!=J2_SCALE*(t2-J2_INIT)){ //while both joints are not at the desired location
 		
 		nxtDisplayClearTextLine(5);
 		nxtDisplayClearTextLine(6);
 		nxtDisplayString(5,"%d",nMotorEncoder(J1));
 		nxtDisplayString(6,"%d",nMotorEncoder(J2));
 		
-		if(nMotorEncoder(J1) < t1-J1_INIT) //if motor encodes is less than desired 
+		if(nMotorEncoder(J1) < J1_SCALE*(t1-J1_INIT)) //if motor encodes is less than desired 
 				motor[J1] = 10; //go forewards
-		else if(nMotorEncoder(J1) > t1-J1_INIT) //if greater
+		else if(nMotorEncoder(J1) > J1_SCALE*(t1-J1_INIT)) //if greater
 				motor[J1] = -10; //go backwards
 		else				//if equal
 				motor[J1] = 0; //stop
 		
-		if(nMotorEncoder(J2) < t2-J2_INIT) //same thing but for the other motor
+		if(nMotorEncoder(J2) < J2_SCALE*(t2-J2_INIT)) //same thing but for the other motor
 				motor[J2] = 10;
-		else if(nMotorEncoder(J2) > t2-J2_INIT)
+		else if(nMotorEncoder(J2) > J2_SCALE*(t2-J2_INIT))
 				motor[J2] = -10;
 		else
 				motor[J2] = 0;
