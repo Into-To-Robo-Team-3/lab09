@@ -12,77 +12,50 @@
 
 int path[LENGTH][2] = {
 {-180, 180}
-//{13,146},
-/*{18,132},
-{22,122},
-{26,112},
-{28,104},
-{31,96},
-{33,89},
-{35,83},
-{37,76},
-{38,70},
-{40,64},
-{41,58},
-{41,52},
-{41,47},
-{41,41},
-{40,35},
-{38,29},
-{34,23},
-{36,16},
-{39,9},
-{36,0},
-{53,0},
-{85,9},
-{87,4},
-{90,0},
-{92,-4},
-{94,-9},
-{96,-14},
-{98,-18},
-{100,-23},
-{95,-32},
-{93,-40},
-{93,-48},
-{93,-57},
-{94,-65},
-{96,-73},
-{99,-82},
-{102,-92},
-{105,-102},
-{109,-114},
-{114,-128},
-*/
 };
 
 
 
 void goToTheta(int t1, int t2){ //puts joints at desired theta one and theta two
 	
-	while(nMotorEncoder(J1)!=J1_SCALE*(t1-J1_INIT)||nMotorEncoder(J2)!=J2_SCALE*(t2-J2_INIT)){ //while both joints are not at the desired location
+	int tick = 0; //encoder ticks, used for joint 2 offset
+	
+	while(nMotorEncoder(J1)!= round(J1_SCALE*(t1-J1_INIT))){ //||nMotorEncoder(J2)!=J2_SCALE*(t2-J2_INIT)){ //while both joints are not at the desired location
+		//nxtDisplayString(4,"%d",tick);
 		
 		nxtDisplayClearTextLine(5);
 		nxtDisplayClearTextLine(6);
 		nxtDisplayString(5,"%d",nMotorEncoder(J1));
 		nxtDisplayString(6,"%d",nMotorEncoder(J2));
 		
-		if(nMotorEncoder(J1) < round(J1_SCALE*(t1-J1_INIT))) //if motor encodes is less than desired 
+		tick = tick + 1; //increment encoder tick
+		
+		if(nMotorEncoder(J1) < round(J1_SCALE*(t1-J1_INIT))){ //if motor encodes is less than desired 
 				motor[J1] = 10; //go forewards
-		else if(nMotorEncoder(J1) > round(J1_SCALE*(t1-J1_INIT))) //if greater
+				if(tick % 4 == 0){ //add offset to second joint to offset backlash
+					t2 = t2 + 1;
+				}
+		}			
+		else if(nMotorEncoder(J1) > round(J1_SCALE*(t1-J1_INIT))){ //if greater
 				motor[J1] = -10; //go backwards
+				if(tick % 4 == 0){ //add offset to second joint to offset backlash
+					t2 = t2 - 1;
+				}	
+		}		
 		else				//if equal
 				motor[J1] = 0; //stop
 		
-		if(nMotorEncoder(J2) < J2_SCALE*(t2-J2_INIT)) //same thing but for the other motor
+		//nxtDisplayString(7,"%d",t2);
+		if(nMotorEncoder(J2) < round(J2_SCALE*(t2-J2_INIT))) //same thing but for the other motor
 				motor[J2] = 10;
-		else if(nMotorEncoder(J2) > J2_SCALE*(t2-J2_INIT))
+		else if(nMotorEncoder(J2) > round(J2_SCALE*(t2-J2_INIT)))
 				motor[J2] = -10;
 		else
 				motor[J2] = 0;
 	}
 	motor[J1] = 0; //stops both motors
 	motor[J2] = 0;
+	
 }
 
 task main()
