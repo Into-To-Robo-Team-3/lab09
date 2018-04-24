@@ -180,6 +180,7 @@ task main()
 {
 	nMotorEncoder(J1) = 0; //reset encoders
 	nMotorEncoder(J2) = 0;
+	goToTheta(15, 147);
 	for(int i = 0; i< LENGTH_1; i++){
 		goToTheta((int)path_1[i][0], (int)path_1[i][1]); //for each angle pair, go to said angles
 	}
